@@ -1,326 +1,149 @@
-// display instructions
-const instructionsModal = new bootstrap.Modal('#staticBackdrop');
-instructionsModal.show(this);
+const card = {
+    ID: "",
+    iconID: "",
+    icon: "",
+    reveal: false,
+}
 
-let symbolURL = [
+let cards = [];
+
+const iconArray = [
     "./sources/images/star.png", 
     "./sources/images/circle.png", 
     "./sources/images/heart.png", 
     "./sources/images/square.png", 
     "./sources/images/triangle.png"
-];
+]
 
-let card = {
-    variable: 0, //holds the index of the cards array
-    reveal: false, //indicates if the card is revealed
-    path: "" //path of the image
-}
+//display instructions
+const instructionsModal = new bootstrap.Modal('#staticBackdrop');
+instructionsModal.show(this);
 
-let availableCards = [];
-
-// level of difficulty & card generator
-const difficultyLevel = document.querySelectorAll(".difficulty");
+// set level
+const difficultyLevel = document.querySelectorAll(`.difficulty`);
 difficultyLevel.forEach((difficulty) => {
     difficulty.addEventListener("click", () => {
-        initialize(difficulty.id);
+        switch (difficulty.id) {
+            case `easy`: 
+                initialize(6);
+                break;
+            case `medium`: 
+                initialize(8);
+                break;
+            case `hard`: 
+                initialize(10);
+                break;
+        }
 
-        const delay = 2000;
+        reveal(3);
+        reveal(7);
 
-        reveal();
-
-        window.setTimeout(() => {hide();}, delay);
-
-        
     })
 })
 
-function initialize(level) {
-    if (level == `easy`) {
-        console.log(level);
-        document.querySelector(`#card-container`).innerHTML = `        
-        <div class="row mb-5">
+function initialize (numberOfCards) {
+    const halfCards = numberOfCards / 2;
+    let iconCounter = 0;
+
+    // empty containers
+    document.querySelector(`#row1`).innerHTML = ``;
+    document.querySelector(`#row2`).innerHTML = ``;
+
+    // populate container
+    for (let i = 0; i < numberOfCards; i++){
+        if (i < halfCards) {
+            //make card
+            document.querySelector(`#row1`).innerHTML += `
             <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
+                <div class="card" style="height: 20em; width: 15em; background-color: #818384;" id = "card${i}">
                     <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
+                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}">
                     </div>
                 </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-        </div>`;
-
-    } else if (level == "medium") {
-        console.log(`medium`);
-        document.querySelector(`#card-container`).innerHTML = `
-        <div class="row mb-5">
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-        </div>`;
-
-    } else if (level == "hard") {
-        console.log(`hard`);
-
-        document.querySelector(`#card-container`).innerHTML = `
-        <div class="row mb-5">
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-                        <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark">
-                    </div>
-                </div>
-            </div>
-        </div>`;
-
-    } else {
-        console.log(`none`);
-    }
-}
-
-function reveal() {
-
-    const cards = document.querySelectorAll(".card");
-    const cardIcon = document.querySelectorAll(".card-icon");
-
-    let arrayLength = cards.length;
-
-    let halfLength = arrayLength/2; //indicate to restart the symbol
-
-    console.log(`halfLength = ${halfLength}`);
-
-    let symbolCounter = 0;
-
-
-    // cardIcon[3].getAttributeNode("src").value = "https://placehold.co/50x50/png";
-
-    for (let i = 0; i < arrayLength; i++){
-
-        console.log(i);
-
-        console.log(`symbolCounter = ${symbolCounter}`);
-
-        cards[i].style.backgroundColor = "white";
-        cards[i].style.borderStyle = "solid";
-        cards[i].style.borderWidth = "10px";
-        cards[i].style.borderColor = "#818384";
-
-        availableCards.push(
-            {
-                variable: i,
-                reveal: false,
-                path: symbolURL[symbolCounter]
-            }
-        );
-
-        console.log(availableCards[i]);
-
-        cardIcon[i].getAttributeNode("src").value = availableCards[i].path;
-
-        cardIcon[i].style.width = "200px";
-
-        console.log(availableCards[i].path);
-
-        console.log(symbolURL[symbolCounter]);
-
-
-        if (symbolCounter >= halfLength - 1) {
-            symbolCounter = 0;
+            </div>`;
+            console.log (`first half ${i}`);
         } else {
-            symbolCounter++;
+            document.querySelector(`#row2`).innerHTML += `
+            <div class="col d-flex justify-content-center">
+                <div class="card" style="height: 20em; width: 15em; background-color: #818384;" id = "card${i}">
+                    <div class="card-body d-flex justify-content-center align-items-center" style="">
+                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}">
+                    </div>
+                </div>
+            </div>`;
+            console.log (`second half ${i}`);
+        }
+
+        //initialize an object with card id
+        cards.push({
+            ID: `card${i}`,
+            iconID: `icon${i}`,
+            icon: iconArray[iconCounter],
+            reveal: false
+        })
+        
+        // repeat icon indicator
+        if (i == halfCards - 1) {
+            iconCounter = 0;
+            console.log (`iconCounter = ${iconCounter}`);
+        } else {
+            iconCounter++;
         }
     }
 
-    // cardIcon[0].getAttributeNode("src").value = "https://placehold.co/50x50";
-
+    console.log(cards);
 }
 
-function hide() {
-    const cards = document.querySelectorAll(".card");
-    const cardIcon = document.querySelectorAll(".card-icon");
-
-    let arrayLength = cards.length;
-
-    for (let i = 0; i < arrayLength; i++){
-        cards[i].style.backgroundColor = "#818384";
-        cards[i].style.borderStyle = "none";
-
-        cardIcon[i].getAttributeNode("src").value = "./sources/images/question-mark.png";
-
-        cardIcon[i].style.width = "50px";
-
-    }
-}
-
-//click a card
-
-const cards = document.querySelectorAll(".card");
-cards.forEach((card) => {
-    card.addEventListener("click", () => {
-        //know which card was clicked
-
-        //update reveal attribute
-
-        //reveal clicked
-
-        //check if all is clicked
+// reveal cards when clicked
+const displayCards = document.querySelectorAll(`.card`);
+displayCards.forEach((display) => {
+    display.addEventListener ("click", () => {
+        switch (display) {
+            case `card0`: 
+                reveal(0);
+                break;
+            case `card1`: 
+                reveal(1);
+                break;
+            case `card2`: 
+                reveal(2);
+                break;
+            case `card3`: 
+                reveal(3);
+                break;
+            case `card4`: 
+                reveal(4);
+                break;
+            case `card5`: 
+                reveal(5);
+                break;
+            case `card6`: 
+                reveal(6);
+                break;
+            case `card7`: 
+                reveal(7);
+                break;
+            case `card8`: 
+                reveal(8);
+                break;
+            case `card9`: 
+                reveal(9);
+                break;
+        }
     })
 })
 
-//hide with clicked shown
+function reveal (index) {
+    let card = document.querySelector(`#card${index}`);
+    let icon = document.querySelector(`#icon${index}`);
 
+    card.style.backgroundColor = "white";
+    card.style.borderStyle = "solid";
+    card.style.borderWidth = "10px";
+    card.style.borderColor = "#818384";
+
+    icon.getAttributeNode("src").value = cards[index].icon;
+    icon.style.width = "200px";
+}
+
+//make a reveal function, that reveals each card if clicked
