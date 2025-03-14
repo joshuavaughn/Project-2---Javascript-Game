@@ -1,0 +1,5 @@
+const delay = 2000;
+
+window.setTimeout(() => {
+    document.querySelector(`#surpirse`).innerHTML = "🤞";
+}, delay);
