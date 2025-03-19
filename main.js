@@ -21,9 +21,8 @@ const iconArray = [
 
 let gameScore = 0;
 
-//display instructions
-const instructionsModal = new bootstrap.Modal('#staticBackdrop');
-instructionsModal.show(this);
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('load', checkOrientation);
 
 // set level
 const LEVEL = document.querySelectorAll(`.difficulty`);
@@ -65,18 +64,18 @@ async function initialize (numberOfCards) {
             //make card
             document.querySelector(`#row1`).innerHTML += `
             <div class="col d-flex justify-content-center">
-                <button class="card" style="height: 20em; width: 15em; background-color: #818384;" id = "card${i}">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}">
+                <button class="card" style="height: 15vw; width: 12vw; max-width: 200px; max-height: 300px; background-color: #818384;" id = "card${i}">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}"  style="max-width: 15vw; height: auto;">
                     </div>
                 </button>
             </div>`;
         } else {
             document.querySelector(`#row2`).innerHTML += `
             <div class="col d-flex justify-content-center">
-                <button class="card" style="height: 20em; width: 15em; background-color: #818384;" id = "card${i}">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}">
+                <button class="card" style="height: 15vw; width: 12vw; max-width: 200px; max-height: 300px; background-color: #818384;" id = "card${i}">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}"  style="max-width: 15vw; height: auto;">
                     </div>
                 </button>
             </div>`;
@@ -104,12 +103,12 @@ function revealAll() {
     displayCards.forEach((display) => {
         display.style.backgroundColor = "white";
         display.style.borderStyle = "solid";
-        display.style.borderWidth = "10px";
+        display.style.borderWidth = "0.3em";
         display.style.borderColor = "#818384";
 
         let displayIcon = document.querySelector(`#icon${display.id[4]}`);
         displayIcon.getAttributeNode("src").value = cardsArray[display.id[4]].icon;
-        displayIcon.style.width = "200px";
+        displayIcon.style.width = "15vw";
     });
 
     return new Promise ((resolve, reject) => {
@@ -121,7 +120,9 @@ function revealAll() {
     
                 let displayIcon = document.querySelector(`#icon${hideCard.id[4]}`);
                 displayIcon.getAttributeNode("src").value = "./sources/images/question-mark.png";
-                displayIcon.style.width = "50px";
+                displayIcon.style.width = "10vw";    // ✅ Responsive width
+                displayIcon.style.maxWidth = "50px"; // ✅ Limits max width
+                displayIcon.style.height = "auto";   // ✅ Correct way to maintain aspect ratio
             })
 
             let toReturn = true;
@@ -217,11 +218,11 @@ function reveal (index) {
     
         card.style.backgroundColor = "white";
         card.style.borderStyle = "solid";
-        card.style.borderWidth = "10px";
+        card.style.borderWidth = "0.3em";
         card.style.borderColor = "#818384";
     
         icon.getAttributeNode("src").value = cardsArray[index].icon;
-        icon.style.width = "200px";
+        icon.style.width = "12vw";
 
         cardsArray[index].reveal = true;
 
@@ -242,12 +243,12 @@ function isFinished() {
             console.log (`match found!`);
             card1.style.backgroundColor = "#E7F4D8";
             card1.style.borderStyle = "solid";
-            card1.style.borderWidth = "10px";
+            card1.style.borderWidth = "0.3em";
             card1.style.borderColor = "#00B050";
 
             card2.style.backgroundColor = "#E7F4D8";
             card2.style.borderStyle = "solid";
-            card2.style.borderWidth = "10px";
+            card2.style.borderWidth = "0.3em";
             card2.style.borderColor = "#00B050";
 
             gameScore++;
@@ -255,12 +256,12 @@ function isFinished() {
             console.log (`try again`);
             card1.style.backgroundColor = "#FFB7B7";
             card1.style.borderStyle = "solid";
-            card1.style.borderWidth = "10px";
+            card1.style.borderWidth = "0.3em";
             card1.style.borderColor = "#FF0000";
 
             card2.style.backgroundColor = "#FFB7B7";
             card2.style.borderStyle = "solid";
-            card2.style.borderWidth = "10px";
+            card2.style.borderWidth = "0.3em";
             card2.style.borderColor = "#FF0000";
         }
         pair = [];
@@ -287,3 +288,17 @@ function isFinished() {
     })
 }
 
+function checkOrientation() {
+    if (window.innerWidth <= 430) {
+        console.log(`You are on mobile`);
+    }
+
+    if (window.innerHeight > window.innerWidth) {
+        const resizeModal = new bootstrap.Modal('#resizeModal');
+        resizeModal.show(this);
+    } else {
+        document.getElementById("closeResizeModal").click();
+        const instructionsModal = new bootstrap.Modal('#staticBackdrop');
+        instructionsModal.show(this);
+    }
+}
