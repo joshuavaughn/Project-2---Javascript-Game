@@ -66,7 +66,7 @@ async function initialize (numberOfCards) {
             <div class="col d-flex justify-content-center">
                 <button class="card" style="height: 15vw; width: 12vw; max-width: 200px; max-height: 300px; background-color: #818384;" id = "card${i}">
                     <div class="card-body d-flex justify-content-center align-items-center">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}"  style="max-width: 10vw; height: auto;">
+                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}"  style="max-width: 15vw; height: auto;">
                     </div>
                 </button>
             </div>`;
@@ -75,7 +75,7 @@ async function initialize (numberOfCards) {
             <div class="col d-flex justify-content-center">
                 <button class="card" style="height: 15vw; width: 12vw; max-width: 200px; max-height: 300px; background-color: #818384;" id = "card${i}">
                     <div class="card-body d-flex justify-content-center align-items-center">
-                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}"  style="max-width: 10vw; height: auto;">
+                        <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}"  style="max-width: 15vw; height: auto;">
                     </div>
                 </button>
             </div>`;
@@ -108,7 +108,7 @@ function revealAll() {
 
         let displayIcon = document.querySelector(`#icon${display.id[4]}`);
         displayIcon.getAttributeNode("src").value = cardsArray[display.id[4]].icon;
-        displayIcon.style.width = "10vw";
+        displayIcon.style.width = "15vw";
     });
 
     return new Promise ((resolve, reject) => {
@@ -222,7 +222,7 @@ function reveal (index) {
         card.style.borderColor = "#818384";
     
         icon.getAttributeNode("src").value = cardsArray[index].icon;
-        icon.style.width = "10vw";
+        icon.style.width = "12vw";
 
         cardsArray[index].reveal = true;
 
@@ -289,6 +289,7 @@ function isFinished() {
 }
 
 function checkOrientation() {
+    console.log(window.innerWidth);
     if (window.innerWidth <= 430) {
         console.log(`You are on mobile`);
     }
