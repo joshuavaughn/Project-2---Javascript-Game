@@ -87,6 +87,34 @@
         </div>
     </div>
 
+    <div class="modal fade" id="shuffleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content" id="instructions">
+                <div class="modal-body p-5 text-dark">
+                    <h1>Shuffiling Cards</h1>
+                    <p>Test your luck and pick the same card!</p>
+                    <button type="button" class="btn-close d-none" id="closeShuffleModal" data-bs-dismiss="modal"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="endGameModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content" id="instructions">
+            <div class="modal-body px-5 pt-5 text-dark text-center pb-0 mb-0">
+                <h1>Game Over!</h1>
+                <p id="gameScore"></p>
+            </div>
+            <div class="modal-footer d-flex justify-content-center align-items-center py-3">
+                <button type="button" class="btn btn-warning" id="playAgain" data-bs-dismiss="modal">Play Again!</button>
+              </div>
+        </div>
+    </div>
+</div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>

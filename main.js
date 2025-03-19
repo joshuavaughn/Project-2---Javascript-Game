@@ -5,7 +5,11 @@ const card = {
     reveal: false,
 }
 
+const CARDS = document.querySelectorAll(`.card`);
+
 let cardsArray = [];
+
+let pair = [];
 
 const iconArray = [
     "./sources/images/star.png", 
@@ -15,6 +19,8 @@ const iconArray = [
     "./sources/images/triangle.png"
 ]
 
+let gameScore = 0;
+
 //display instructions
 const instructionsModal = new bootstrap.Modal('#staticBackdrop');
 instructionsModal.show(this);
@@ -22,7 +28,7 @@ instructionsModal.show(this);
 // set level
 const LEVEL = document.querySelectorAll(`.difficulty`);
 LEVEL.forEach((level) => {
-    level.addEventListener("click", () => {
+    level.addEventListener("click", async () => {
         switch (level.id) {
             case `easy`: 
                 initialize(6);
@@ -35,15 +41,17 @@ LEVEL.forEach((level) => {
                 break;
         }
 
-        // reveal(3);
-        // reveal(4);
+        const toReveal = await revealAll();
+        console.log(toReveal);
 
+        const toShuffle = await shuffle();
+        console.log(toShuffle);
 
-
+        checkCard ();
     })
 })
 
-function initialize (numberOfCards) {
+async function initialize (numberOfCards) {
     const halfCards = numberOfCards / 2;
     let iconCounter = 0;
 
@@ -57,23 +65,21 @@ function initialize (numberOfCards) {
             //make card
             document.querySelector(`#row1`).innerHTML += `
             <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;" id = "${i}">
+                <button class="card" style="height: 20em; width: 15em; background-color: #818384;" id = "card${i}">
                     <div class="card-body d-flex justify-content-center align-items-center" style="">
                         <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}">
                     </div>
-                </div>
+                </button>
             </div>`;
-            console.log (`first half ${i}`);
         } else {
             document.querySelector(`#row2`).innerHTML += `
             <div class="col d-flex justify-content-center">
-                <div class="card" style="height: 20em; width: 15em; background-color: #818384;" id = "${i}">
+                <button class="card" style="height: 20em; width: 15em; background-color: #818384;" id = "card${i}">
                     <div class="card-body d-flex justify-content-center align-items-center" style="">
                         <img src="./sources/images/question-mark.png" class="card-icon" alt="question-mark" id = "icon${i}">
                     </div>
-                </div>
+                </button>
             </div>`;
-            console.log (`second half ${i}`);
         }
 
         //initialize an object with card id
@@ -87,35 +93,10 @@ function initialize (numberOfCards) {
         // repeat icon indicator
         if (i == halfCards - 1) {
             iconCounter = 0;
-            console.log (`iconCounter = ${iconCounter}`);
         } else {
             iconCounter++;
         }
     }
-
-    revealAll();
-
-    const delay = 2000;
-
-    window.setTimeout(() => {
-        const hideCards = document.querySelectorAll(`.card`);
-        hideCards.forEach((hideCard) => {
-            hideCard.style.backgroundColor = "#818384";
-            hideCard.style.borderStyle = "none";
-
-            let displayIcon = document.querySelector(`#icon${hideCard.id}`);
-
-            displayIcon.getAttributeNode("src").value = "./sources/images/question-mark.png";
-
-            displayIcon.style.width = "50px";
-        })
-
-        shuffle();
-    }, delay);
-
-    console.log(cardsArray);
-
-
 }
 
 function revealAll() {
@@ -126,72 +107,74 @@ function revealAll() {
         display.style.borderWidth = "10px";
         display.style.borderColor = "#818384";
 
-        console.log(`display `);
-        console.log(display.id);
-
-        let displayIcon = document.querySelector(`#icon${display.id}`);
-
-        displayIcon.getAttributeNode("src").value = cardsArray[display.id].icon;
-
+        let displayIcon = document.querySelector(`#icon${display.id[4]}`);
+        displayIcon.getAttributeNode("src").value = cardsArray[display.id[4]].icon;
         displayIcon.style.width = "200px";
-
-        // cardIcon[i].style.width = "200px";
-
-        // cards[display.id]
-         
-        // cardIcon[display.id].getAttributeNode("src").value = availableCards[i].path;
-
     });
 
-    console.log(`reveal done`);
+    return new Promise ((resolve, reject) => {
+        setTimeout(() => {
+            const thisCards = document.querySelectorAll(`.card`);
+            thisCards.forEach((hideCard) => {
+                hideCard.style.backgroundColor = "#818384";
+                hideCard.style.borderStyle = "none";
+    
+                let displayIcon = document.querySelector(`#icon${hideCard.id[4]}`);
+                displayIcon.getAttributeNode("src").value = "./sources/images/question-mark.png";
+                displayIcon.style.width = "50px";
+            })
+
+            let toReturn = true;
+
+            if (toReturn) {
+                resolve(`yay done revealAll`);
+            } else {
+                reject(`naur`);
+            }
+        }, 2000);
+    })
 }
 
 function shuffle() {
-    let cards = document.querySelectorAll(`.card`);
+    const shufflingModal = new bootstrap.Modal('#shuffleModal');
+    shufflingModal.show(this);
 
-    console.log(`shuffling`);
+    return new Promise((resolve, reject) => {
+        const delay = 3500;
+        window.setTimeout(() => {
 
-    console.log(cardsArray);
-    
-    let array = [1, 2, 3, 4, 5];
+            document.getElementById("closeShuffleModal").click();
+            
+            let currentIndex = cardsArray.length;
 
-    let currentIndex = cardsArray.length;
-      
-    console.log(currentIndex);
+            // While there remain elements to shuffle...
+            while (currentIndex != 0) {
+                // Pick a remaining element...
+                let randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                
+                // And swap it with the current element.
+                [cardsArray[currentIndex], cardsArray[randomIndex]] = [cardsArray[randomIndex], cardsArray[currentIndex]];
+            }
 
-    // While there remain elements to shuffle...
-    while (currentIndex != 0) {
-      
-        // Pick a remaining element...
-        let randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
+            let toReturn = true;
+            if (toReturn) {
+                resolve(`yay done shuffling`);
+            } else {
+                reject(`naur`);
+            }
+        }, delay);
 
-        console.log(randomIndex);
         
-            // And swap it with the current element.
-        [cardsArray[currentIndex], cardsArray[randomIndex]] = [
-            cardsArray[randomIndex], cardsArray[currentIndex]];
-
-
-        
-        console.log(currentIndex);
-    }
-
-    console.log(`done shuffling`);
-    console.log(cardsArray);
-
-
-    revealAll();
-
-    // reveal(0);
-    // reveal(3);
+    })
 }
 
-// reveal cards when clicked
-const displayCards = document.querySelectorAll(`.card`);
-displayCards.forEach((display) => {
+function checkCard() {
+    // reveal cards when clicked
+    const displayCards = document.querySelectorAll(`.card`);
+    displayCards.forEach((display) => {
     display.addEventListener ("click", () => {
-        switch (display) {
+        switch (display.id) {
             case `card0`: 
                 reveal(0);
                 break;
@@ -222,21 +205,85 @@ displayCards.forEach((display) => {
             case `card9`: 
                 reveal(9);
                 break;
-        }
+        }  
     })
 })
-
-function reveal (index) {
-    let card = document.querySelector(`#${index}`);
-    let icon = document.querySelector(`#icon${index}`);
-
-    card.style.backgroundColor = "white";
-    card.style.borderStyle = "solid";
-    card.style.borderWidth = "10px";
-    card.style.borderColor = "#818384";
-
-    icon.getAttributeNode("src").value = cards[index].icon;
-    icon.style.width = "200px";
 }
 
-//make a reveal function, that reveals each card if clicked
+function reveal (index) {
+    if (cardsArray[index].reveal == false) {
+        let card = document.querySelector(`#card${index}`);
+        let icon = document.querySelector(`#icon${index}`);
+    
+        card.style.backgroundColor = "white";
+        card.style.borderStyle = "solid";
+        card.style.borderWidth = "10px";
+        card.style.borderColor = "#818384";
+    
+        icon.getAttributeNode("src").value = cardsArray[index].icon;
+        icon.style.width = "200px";
+
+        cardsArray[index].reveal = true;
+
+        pair.push(index);
+
+        isFinished();
+    } else {
+        console.log(`card revealed already`);
+    }
+}
+
+function isFinished() {
+    if (pair.length == 2) {
+        let card1 = document.querySelector(`#card${pair[0]}`);
+        let card2 = document.querySelector(`#card${pair[1]}`);
+
+        if (cardsArray[pair[0]].icon == cardsArray[pair[1]].icon) {
+            console.log (`match found!`);
+            card1.style.backgroundColor = "#E7F4D8";
+            card1.style.borderStyle = "solid";
+            card1.style.borderWidth = "10px";
+            card1.style.borderColor = "#00B050";
+
+            card2.style.backgroundColor = "#E7F4D8";
+            card2.style.borderStyle = "solid";
+            card2.style.borderWidth = "10px";
+            card2.style.borderColor = "#00B050";
+
+            gameScore++;
+        } else {
+            console.log (`try again`);
+            card1.style.backgroundColor = "#FFB7B7";
+            card1.style.borderStyle = "solid";
+            card1.style.borderWidth = "10px";
+            card1.style.borderColor = "#FF0000";
+
+            card2.style.backgroundColor = "#FFB7B7";
+            card2.style.borderStyle = "solid";
+            card2.style.borderWidth = "10px";
+            card2.style.borderColor = "#FF0000";
+        }
+        pair = [];
+
+    } 
+
+    for (let i = 0; i < cardsArray.length; i++) {
+        if (cardsArray[i].reveal == false) {
+            return;
+        }
+    }
+    const endGameModal = new bootstrap.Modal('#endGameModal');
+    endGameModal.show(this);
+
+    let gameMessage = document.querySelector(`#gameScore`);
+    if (gameScore >= (cardsArray.length / 2)) {
+        gameMessage.innerHTML = `Congratulations you had ${gameScore}/${cardsArray.length/2}! 🎉`;
+    } else {
+        gameMessage.innerHTML = `Your score is ${gameScore}/${cardsArray.length/2}, try again!`;
+    }
+
+    document.querySelector(`#playAgain`).addEventListener("click", () =>{
+        location.reload();
+    })
+}
+
